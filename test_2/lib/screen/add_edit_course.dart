@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:test_2/AppColor.dart';
 import 'package:test_2/Toast.dart';
@@ -11,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:hive/hive.dart';
 import 'package:test_2/route_setting.dart';
 
+@RoutePage()
 class AddEditCourseScreen extends StatefulWidget {
   const AddEditCourseScreen({super.key});
 
@@ -55,7 +57,7 @@ class _AddEditCourseScreenState extends State<AddEditCourseScreen> {
       });
       getcourse();
     } else {
-      print("something went worng");
+      // print("something went worng");
       setState(() {
         isEdit = false;
       });
@@ -278,8 +280,9 @@ class _AddEditCourseScreenState extends State<AddEditCourseScreen> {
                                           : 'Cource Added',
                                       error: false);
 
-                                  Navigator.pushNamedAndRemoveUntil(
-                                      context, MyRouter.home, (route) => false);
+                                  // Navigator.pushNamedAndRemoveUntil(
+                                  //     context, MyRouter.home, (route) => false);
+                                  Navigator.pop(context);
                                 }
                               },
                               child: Center(

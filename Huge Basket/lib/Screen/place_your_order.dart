@@ -1,9 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:hive/hive.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_27_03/Cutom/Button/full_button_custom.dart';
+import 'package:task_27_03/Cutom/future/future_class.dart';
 import 'package:task_27_03/Screen/manage_address.dart';
 import 'package:task_27_03/Utils/AppColor.dart';
 import 'package:task_27_03/Utils/Toast.dart';
@@ -46,26 +44,6 @@ class _PlaceYourOrderState extends State<PlaceYourOrder> {
   void initState() {
     super.initState();
     _fetchUserAddresses();
-  }
-
-  Future<List<Map<dynamic, dynamic>>?> getUserAddresses() async {
-    var box = await Hive.openBox('users_address');
-
-    String? token = await _getToken();
-    List<dynamic>? addresses = await box.get(token);
-    // print(addresses);
-    if (addresses != null) {
-      List<Map<dynamic, dynamic>> convertedAddresses =
-          addresses.cast<Map<dynamic, dynamic>>().toList();
-      return convertedAddresses;
-    } else {
-      return null;
-    }
-  }
-
-  Future<String?> _getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token');
   }
 
   List<Map<dynamic, dynamic>>? userAddresses;

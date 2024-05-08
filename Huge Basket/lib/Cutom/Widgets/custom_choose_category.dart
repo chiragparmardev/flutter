@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:task_27_03/Utils/AppColor.dart';
 
 class CustomChooseCategory extends StatelessWidget {
-  final String imgUrl;
+  final Image imgUrl;
   final String title;
   final bool isSelected;
   const CustomChooseCategory({
@@ -35,13 +35,10 @@ class CustomChooseCategory extends StatelessWidget {
                         color: boxShadowColor, blurRadius: 5, spreadRadius: 1)
                   ]),
               child: Center(
-                child: SizedBox(
-                  height: 30,
+                child: Image(
+                  image: imgUrl.image,
                   width: 30,
-                  child: Image.asset(
-                    imgUrl,
-                    fit: BoxFit.cover,
-                  ),
+                  height: 30,
                 ),
               )),
           const SizedBox(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_27_03/Cutom/Appbar/appbar_custom.dart';
+import 'package:task_27_03/Cutom/future/future_class.dart';
 import 'package:task_27_03/Utils/AppColor.dart';
 import 'package:task_27_03/route_setting.dart';
 
@@ -19,38 +18,6 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
   void initState() {
     super.initState();
     _fetchUserAddresses();
-  }
-
-  Future<List<Map<dynamic, dynamic>>?> getUserAddresses() async {
-    var box = await Hive.openBox('users_address');
-
-    String? token = await _getToken();
-    List<dynamic>? addresses = await box.get(token);
-    // print(addresses);
-    if (addresses != null) {
-      List<Map<dynamic, dynamic>> convertedAddresses =
-          addresses.cast<Map<dynamic, dynamic>>().toList();
-      return convertedAddresses;
-    } else {
-      return null;
-    }
-  }
-
-  Future<void> deleteAddress(int index) async {
-    var box = await Hive.openBox('users_address');
-
-    String? token = await _getToken();
-    List<dynamic>? addresses = await box.get(token);
-
-    if (addresses != null && index >= 0 && index < addresses.length) {
-      addresses.removeAt(index);
-      await box.put(token, addresses);
-    }
-  }
-
-  Future<String?> _getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token');
   }
 
   List<Map<dynamic, dynamic>>? userAddresses;
