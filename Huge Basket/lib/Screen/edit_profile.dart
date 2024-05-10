@@ -10,7 +10,6 @@ import 'package:task_27_03/Cutom/Appbar/appbar_custom.dart';
 import 'package:task_27_03/Cutom/Button/full_button_custom.dart';
 import 'package:task_27_03/Cutom/TextField/text_field_custom.dart';
 import 'package:task_27_03/Utils/AppColor.dart';
-import 'package:task_27_03/route_setting.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -211,15 +210,12 @@ class _EditProfileState extends State<EditProfile> {
                 var localjsonData = jsonEncode(userDataProfile);
                 localStorage.setItem(mono.toString(), localjsonData);
 
-                // Navigator.pop(context);
+                Navigator.pop(context);
 
                 var snackBar = const SnackBar(
                     backgroundColor: AppColor.primary,
                     content: Text('Update Profile'));
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-                Navigator.pushNamedAndRemoveUntil(
-                    context, MyRouter.manage_address, (route) => false);
               }
             },
             title: 'Update'),

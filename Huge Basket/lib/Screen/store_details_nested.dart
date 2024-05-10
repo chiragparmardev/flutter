@@ -59,8 +59,7 @@ class _StoreDetailsNestedState extends State<StoreDetailsNested> {
                 expandedHeight: 245,
                 leading: IconButton(
                     onPressed: () {
-                      // Navigator.pop(context);
-                      Navigator.pushNamedAndRemoveUntil(context, MyRouter.home_page, (route) => false);
+                      Navigator.pop(context);
                     },
                     icon: const Icon(
                       Icons.arrow_back_ios_new_rounded,

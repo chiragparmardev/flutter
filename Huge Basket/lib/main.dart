@@ -3,7 +3,9 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:hive/hive.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:provider/provider.dart';
 import 'package:task_27_03/Utils/AppColor.dart';
+import 'package:task_27_03/providers/chat_provider.dart';
 
 import 'package:task_27_03/route_setting.dart';
 
@@ -22,7 +24,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return MultiProvider(providers: [
+        ChangeNotifierProvider(create: (context) => ChatProvider()),
+    ],child: GetMaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       initialRoute: MyRouter.root,
@@ -33,6 +37,6 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: AppColor.primary),
         useMaterial3: true,
       ),
-    );
+    ),);
   }
 }

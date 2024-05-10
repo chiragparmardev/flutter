@@ -22,7 +22,6 @@ class _HomePageState extends State<HomePage> {
       List<Items> shopItems = List<Items>.from(shopMap['items']);
       totalItems += shopItems.length;
     }
-
     return Scaffold(
       extendBody: true,
       body: IndexedStack(
@@ -75,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                             child: Text(
                               totalItems.toString(),
                               style:
-                                  TextStyle(color: AppColor.white, fontSize: 7),
+                                  const TextStyle(color: AppColor.white, fontSize: 7),
                             ),
                           ),
                         ),

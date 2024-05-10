@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:task_27_03/Screen/add_address.dart';
 import 'package:task_27_03/Screen/add_more_details.dart';
 import 'package:task_27_03/Screen/cart.dart';
+import 'package:task_27_03/Screen/chat.dart';
 import 'package:task_27_03/Screen/edit_address.dart';
 import 'package:task_27_03/Screen/edit_profile.dart';
 import 'package:task_27_03/Screen/get_started.dart';
@@ -16,6 +17,7 @@ import 'package:task_27_03/Screen/otp.dart';
 import 'package:task_27_03/Screen/place_your_order.dart';
 import 'package:task_27_03/Screen/product_details.dart';
 import 'package:task_27_03/Screen/product_more.dart';
+import 'package:task_27_03/Screen/recent_chat.dart';
 import 'package:task_27_03/Screen/splace_screen.dart';
 import 'package:task_27_03/Screen/store_details_nested.dart';
 import 'package:task_27_03/Screen/store_page.dart';
@@ -41,6 +43,8 @@ class MyRouter {
   static const String edit_address = "/edit_address";
   static const String manage_address = "/manage_address";
   static const String place_your_order = "/place_your_order";
+  static const String recent_chat = "/recent_chat";
+  static const String chat = "/chat";
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     Widget page = const SplaceScreen();
@@ -102,6 +106,12 @@ class MyRouter {
         break;
       case place_your_order:
         page = const PlaceYourOrder();
+        break;
+      case recent_chat:
+        page = const RecentChat();
+        break;
+      case chat:
+        page = const ChatScreen();
         break;
     }
     return MaterialPageRoute<dynamic>(builder: (_) => page, settings: settings);

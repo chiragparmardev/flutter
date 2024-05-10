@@ -22,4 +22,6 @@ class AppColor {
   static const Color textaddress = Color(0XFF061E31);
   static const Color divider = Color(0XFFF2F2F2);
   static const Color greyPlaceText = Color(0XFF1E2231);
+  static const Color chatIsSederBackground =  Color(0XFFe8f5cc);
+  static const Color chatIsReceiverBackground =  Color(0XFFDCDCDC);
 }

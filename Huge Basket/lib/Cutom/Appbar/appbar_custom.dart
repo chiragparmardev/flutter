@@ -22,6 +22,7 @@ class uiHelper {
         child: AppBar(
           backgroundColor: AppColor.white,
           automaticallyImplyLeading: false,
+          scrolledUnderElevation: 0,
           centerTitle: true,
           title: Text(
             title,

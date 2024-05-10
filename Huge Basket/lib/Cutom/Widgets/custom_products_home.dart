@@ -108,9 +108,11 @@ class CustomProductsHome extends StatelessWidget {
                           child: Ink(
                             child: InkWell(
                               onTap: () {
-                                Navigator.pushNamed(
+                                 Navigator.pushNamed(
                                     context, MyRouter.product_more,
-                                    arguments: productsList);
+                                    arguments: ShopItems(
+                                        productList: productsList[index],
+                                        shopName: shopName));
                               },
                               child: const Center(
                                 child: Icon(

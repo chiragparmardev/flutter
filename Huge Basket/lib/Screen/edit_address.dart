@@ -191,6 +191,7 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
                       Navigator.pop(context);
+                      // Navigator.pop(context);
                     }
                   },
                   title: 'Update'),

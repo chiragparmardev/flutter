@@ -446,7 +446,7 @@ class _CartState extends State<Cart> {
                       child: InkWell(
                         onTap: () {
                           setState(() {
-                            if (total > 10) {
+                            if (total >= 10) {
                               // cartItems.clear();
                               // totalItems = 0;
                               // total = 0;

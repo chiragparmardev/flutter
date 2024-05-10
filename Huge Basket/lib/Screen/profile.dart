@@ -43,7 +43,7 @@ class _ProfilePageState extends State<ProfilePage> {
           icon: const Icon(Icons.chat_bubble_outline),
           title: 'Recent Chat',
           ontap: () {
-            print('Recent Chat tapped');
+               Navigator.pushNamed(context, MyRouter.recent_chat);
           },
           context: context),
       Profile(
@@ -151,8 +151,8 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           child: AppBar(
             backgroundColor: AppColor.white,
-            leading: IconButton(
-                onPressed: () {}, icon: const Icon(Icons.arrow_back_ios_new)),
+            // leading: IconButton(
+            //     onPressed: () {}, icon: const Icon(Icons.arrow_back_ios_new)),
             centerTitle: true,
             title: const Text(
               'Walmart',

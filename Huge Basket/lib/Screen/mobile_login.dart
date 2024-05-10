@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:task_27_03/Cutom/Button/full_button_custom.dart';
 import 'package:task_27_03/Cutom/TextField/text_field_custom.dart';
 import 'package:task_27_03/Utils/AppColor.dart';
-import 'package:task_27_03/gen/assets.gen.dart';
 import 'package:task_27_03/route_setting.dart';
 
 class MobileLogin extends StatefulWidget {
@@ -50,16 +49,11 @@ class _MobileLoginState extends State<MobileLogin> {
                 Padding(
                   padding: const EdgeInsets.only(top: 100),
                   child: Center(
-                    // child: Image.asset(
-                    //   'assets/images/splace.png',
-                    //   height: 200,
-                    //   fit: BoxFit.cover,
-                    // ),
-                    child: Assets.images.splace.image(
-                      height: 200,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                      child: Image.asset(
+                    'assets/images/splace.png',
+                    height: 200,
+                    fit: BoxFit.cover,
+                  )),
                 ),
                 const SizedBox(
                   height: 30,

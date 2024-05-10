@@ -1,18 +1,9 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:task_27_03/Cutom/Button/full_button_custom.dart';
-import 'package:task_27_03/Cutom/future/future_class.dart';
 import 'package:task_27_03/Screen/manage_address.dart';
 import 'package:task_27_03/Utils/AppColor.dart';
-import 'package:task_27_03/Utils/Toast.dart';
 import 'package:task_27_03/route_setting.dart';
-
-class Coupon {
-  final String title;
-  final double percentage;
-
-  Coupon({required this.title, required this.percentage});
-}
 
 class PlaceYourOrder extends StatefulWidget {
   const PlaceYourOrder({super.key});
@@ -29,66 +20,7 @@ class _PlaceYourOrderState extends State<PlaceYourOrder> {
   double tac = 5.0;
   double service = 0.0;
   double device = 0.0;
-  late double promo;
-
-  List<Coupon> couponList = [
-    Coupon(title: 'Flat10%', percentage: 10.0),
-    Coupon(title: 'Flat20%', percentage: 20.0),
-    Coupon(title: 'Flat30%', percentage: 30.0),
-    Coupon(title: 'Flat40%', percentage: 40.0),
-    Coupon(title: 'Flat50%', percentage: 50.0),
-  ];
-  int selectedCouponIndex = -1;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchUserAddresses();
-  }
-
-  List<Map<dynamic, dynamic>>? userAddresses;
-  TextEditingController couponController = TextEditingController();
-
-  _fetchUserAddresses() async {
-    List<Map<dynamic, dynamic>>? addresses = await getUserAddresses();
-    setState(() {
-      userAddresses = addresses;
-    });
-  }
-
-  List<Coupon> _filterCoupons(String searchText) {
-    return couponList
-        .where((coupon) =>
-            coupon.title.toLowerCase().contains(searchText.toLowerCase()))
-        .toList();
-  }
-
-  void _applyCoupon() {
-    String enteredText = couponController.text;
-    if (enteredText.isNotEmpty) {
-      List<Coupon> filteredCoupons = _filterCoupons(enteredText);
-      if (filteredCoupons.isNotEmpty) {
-        _selectCoupon(filteredCoupons.first);
-        Utility.showErrorMessage('Promo Applied', AppColor.primary);
-      } else {
-        Utility.showErrorMessage('No promo for this name', Colors.red);
-      }
-    }
-  }
-
-  void _selectCoupon(Coupon coupon) {
-    setState(() {
-      selectedCouponIndex = couponList.indexOf(coupon);
-      couponController.text = coupon.title;
-    });
-  }
-
-  void _removeCoupon() {
-    setState(() {
-      selectedCouponIndex = -1;
-      couponController.clear();
-    });
-  }
+  double promo = 3.0;
 
   @override
   Widget build(BuildContext context) {
@@ -158,9 +90,8 @@ class _PlaceYourOrderState extends State<PlaceYourOrder> {
             height: 20,
           ),
           Container(
-              padding: const EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.only(bottom: 13, left: 20, right: 20),
               width: double.infinity,
-              height: 57,
               decoration:
                   const BoxDecoration(color: AppColor.white, boxShadow: [
                 BoxShadow(
@@ -169,87 +100,41 @@ class _PlaceYourOrderState extends State<PlaceYourOrder> {
                   offset: Offset(0, 0),
                 )
               ]),
-              child: selectedCouponIndex == -1
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Column(
                       children: [
-                        Expanded(
-                          child: Column(
-                            children: [
-                              TextFormField(
-                                controller: couponController,
-                                decoration: const InputDecoration(
-                                    hintText: "Enter code here",
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none),
-                              ),
-                              DottedBorder(
-                                dashPattern: const [3, 3],
-                                padding: const EdgeInsets.all(0),
-                                color: AppColor.grey200,
-                                borderType: BorderType.Oval,
-                                child: Container(),
-                              )
-                            ],
-                          ),
+                        TextFormField(
+                          decoration: const InputDecoration(
+                              hintText: "Enter code here",
+                              contentPadding: EdgeInsets.zero,
+                              border: InputBorder.none),
                         ),
-                        const SizedBox(
-                          width: 30,
-                        ),
-                        InkWell(
-                          onTap: _applyCoupon,
-                          child: const Text(
-                            'Apply',
-                            style: TextStyle(
-                                color: AppColor.primary,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 17),
-                          ),
+                        DottedBorder(
+                          dashPattern: const [3, 3],
+                          padding: const EdgeInsets.all(0),
+                          color: AppColor.grey200,
+                          borderType: BorderType.Oval,
+                          child: Container(),
                         )
                       ],
-                    )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 7),
-                          decoration: BoxDecoration(
-                              color: AppColor.greenShadow,
-                              borderRadius: BorderRadius.circular(4)),
-                          child: Text(
-                            couponList[selectedCouponIndex].title,
-                            style: const TextStyle(
-                                color: AppColor.primary,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 17),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 30,
-                        ),
-                        Container(
-                          height: 22,
-                          width: 22,
-                          decoration: BoxDecoration(
-                              border:
-                                  Border.all(width: 1.5, color: AppColor.black),
-                              borderRadius: BorderRadius.circular(50)),
-                          child: InkWell(
-                            onTap: _removeCoupon,
-                            child: const Center(
-                              child: Icon(
-                                Icons.close,
-                                size: 16,
-                                color: AppColor.black,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    )),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 30,
+                  ),
+                  const Text(
+                    'Apply',
+                    style: TextStyle(
+                        color: AppColor.primary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 17),
+                  )
+                ],
+              )),
           const SizedBox(
             height: 15,
           ),
@@ -284,30 +169,14 @@ class _PlaceYourOrderState extends State<PlaceYourOrder> {
                   price: subTotal + tac + service + device,
                   boldText: true,
                 ),
-                selectedCouponIndex != -1
-                    ? PriceList(
-                        price: (subTotal + tac + service + device) *
-                            couponList[selectedCouponIndex].percentage /
-                            100,
-                        promo:
-                            'Promo Applied (OFF${couponList[selectedCouponIndex].percentage.toInt()}%)',
-                      )
-                    : const PriceList(
-                        price: 0.0,
-                        promo: 'No promo applied',
-                      ),
-                selectedCouponIndex != -1
-                    ? PriceList(
-                        price: (subTotal + tac + service + device) -
-                            (subTotal + tac + service + device) *
-                                couponList[selectedCouponIndex].percentage /
-                                100,
-                        title: 'Total Amount',
-                        boldText: true)
-                    : PriceList(
-                        price: (subTotal + tac + service + device),
-                        title: 'Total Amount',
-                        boldText: true),
+                PriceList(
+                  price: promo,
+                  promo: 'Promo Applied (OFF20%)',
+                ),
+                PriceList(
+                    price: (subTotal + tac + service + device) - promo,
+                    title: 'Total Amount',
+                    boldText: true),
               ],
             ),
           ),
@@ -335,60 +204,54 @@ class _PlaceYourOrderState extends State<PlaceYourOrder> {
                   height: 1,
                   color: AppColor.black.withOpacity(0.2),
                 ),
-                FutureBuilder(
-                    future: _fetchUserAddresses(),
-                    builder: (context, snapshot) {
-                      return Column(
-                          children: List.generate(
-                        userAddresses?.length ?? 0,
-                        (index) => GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selectedAddressIndex = index;
-                              });
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(
-                                  left: 20, right: 20, top: 15),
-                              decoration: const BoxDecoration(
-                                  color: AppColor.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8)),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: AppColor.greyShadow,
-                                      blurRadius: 6,
-                                      offset: Offset(0, 0),
-                                    )
-                                  ]),
-                              child: Column(children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: Row(
-                                    children: [
-                                      CustomRadioAddress(
-                                        isSelected:
-                                            index == selectedAddressIndex,
-                                      ),
-                                      const SizedBox(
-                                        width: 15,
-                                      ),
-                                      Flexible(
-                                        child: Text(
-                                          "${userAddresses![index]['address']}, ${userAddresses![index]['unit']}, ${userAddresses![index]['city']}, ${userAddresses![index]['state']}, ${userAddresses![index]['zipcode']}, ${userAddresses![index]['instruction']}",
-                                          style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColor.textaddress),
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                Column(
+                    children: List.generate(
+                  2,
+                  (index) => GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedAddressIndex = index;
+                        });
+                      },
+                      child: Container(
+                        margin:
+                            const EdgeInsets.only(left: 20, right: 20, top: 15),
+                        decoration: const BoxDecoration(
+                            color: AppColor.white,
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColor.greyShadow,
+                                blurRadius: 6,
+                                offset: Offset(0, 0),
+                              )
+                            ]),
+                        child: Column(children: [
+                          Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Row(
+                              children: [
+                                CustomRadioAddress(
+                                  isSelected: index == selectedAddressIndex,
                                 ),
-                              ]),
-                            )),
-                      ));
-                    }),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    "799 Lost Creek Road,Seattle , Fort Washington, Us, 19034 $index",
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: AppColor.textaddress),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ]),
+                      )),
+                )),
                 Padding(
                     padding: const EdgeInsets.only(
                         left: 20, right: 20, top: 15, bottom: 15),
