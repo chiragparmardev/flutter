@@ -150,6 +150,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
           child: AppBar(
+            scrolledUnderElevation: 0,
             backgroundColor: AppColor.white,
             // leading: IconButton(
             //     onPressed: () {}, icon: const Icon(Icons.arrow_back_ios_new)),

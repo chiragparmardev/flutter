@@ -72,13 +72,16 @@ class _ChatScreenState extends State<ChatScreen> {
           Expanded(
             child: Consumer<ChatProvider>(
               builder: (context, value, child) {
-                final chatData =
+              final chatData =
                     value.getChatDataForUserProfile(int.parse(arguments.index));
                 Map<String, List<Map<String, dynamic>>> groupedMessages = {};
                 for (var message in chatData) {
                   DateTime dateTime = DateTime.parse(message['timestamp']);
                   String dateKey = value.getFormattedDate(dateTime);
-                  groupedMessages.putIfAbsent(dateKey, () => []);
+
+                  if (!groupedMessages.containsKey(dateKey)) {
+                    groupedMessages[dateKey] = [];
+                  }
                   groupedMessages[dateKey]!.add(message);
                 }
                 return SingleChildScrollView(

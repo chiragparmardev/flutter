@@ -58,6 +58,7 @@ class uiHelper {
             ],
           ),
           child: AppBar(
+            scrolledUnderElevation: 0,
             backgroundColor: AppColor.white,
             leading: IconButton(
                 onPressed: () {
@@ -129,6 +130,7 @@ class uiHelper {
           ],
         ),
         child: AppBar(
+            scrolledUnderElevation: 0,
             automaticallyImplyLeading: false,
             centerTitle: true,
             backgroundColor: AppColor.white,

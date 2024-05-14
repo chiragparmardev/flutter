@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ChatProvider extends ChangeNotifier {
-
   TextEditingController chatEditingController = TextEditingController();
 
   final List<Map<String, dynamic>> userProfiles = [
@@ -10,7 +9,6 @@ class ChatProvider extends ChangeNotifier {
       "username": "Walmart",
       "image":
           "https://www.vmcdn.ca/f/files/localprofile/import/2023_04_shutterstock_2033960729-scaled.jpg",
-     
     },
     {
       "user_id": 2,
@@ -21,7 +19,7 @@ class ChatProvider extends ChangeNotifier {
   ];
 
   final List<Map<String, dynamic>> chatData = [
-     {
+    {
       "user_id": 1,
       "timestamp": "2024-05-08 08:30:00",
       "read_status": 2,
@@ -55,7 +53,6 @@ class ChatProvider extends ChangeNotifier {
       "read_status": 1,
       "is_sender": true
     },
-    
   ];
 
   List<Map<String, dynamic>> getChatDataForUserProfile(int userProfileIndex) {
@@ -63,21 +60,22 @@ class ChatProvider extends ChangeNotifier {
     return chatData.where((data) => data['user_id'] == userProfileId).toList();
   }
 
-    int getUnreadCount(int userProfileIndex) {
+  int getUnreadCount(int userProfileIndex) {
     final userProfileId = userProfiles[userProfileIndex]['user_id'];
     return chatData
-        .where((data) => data['user_id'] == userProfileId && data['read_status'] == 1)
+        .where((data) =>
+            data['user_id'] == userProfileId && data['read_status'] == 1)
         .length;
   }
 
-   String getLastMessage(int userProfileIndex) {
+  String getLastMessage(int userProfileIndex) {
     final userProfileId = userProfiles[userProfileIndex]['user_id'];
     final userChatData =
         chatData.where((data) => data['user_id'] == userProfileId).toList();
     if (userChatData.isNotEmpty) {
       return userChatData.last['message'];
     }
-    return ""; 
+    return "";
   }
 
   String getFormattedDate(DateTime date) {
@@ -99,36 +97,30 @@ class ChatProvider extends ChangeNotifier {
   }
 
   String getMonthName(int month) {
-    switch (month) {
-      case 1:
-        return 'January';
-      case 2:
-        return 'February';
-      case 3:
-        return 'March';
-      case 4:
-        return 'April';
-      case 5:
-        return 'May';
-      case 6:
-        return 'June';
-      case 7:
-        return 'July';
-      case 8:
-        return 'August';
-      case 9:
-        return 'September';
-      case 10:
-        return 'October';
-      case 11:
-        return 'November';
-      case 12:
-        return 'December';
-      default:
-        return '';
+    List<String> monthNames = [
+      '',
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ];
+
+    if (month >= 1 && month <= 12) {
+      return monthNames[month];
+    } else {
+      return '';
     }
   }
-String getTime(String timestamp) {
+
+  String getTime(String timestamp) {
     DateTime dateTime = DateTime.parse(timestamp);
     String hour = (dateTime.hour % 12).toString();
     if (hour == '0') {
@@ -142,7 +134,7 @@ String getTime(String timestamp) {
     return '$hour:$minute $period';
   }
 
-String getLastMessageTimeAgo(int userProfileIndex) {
+  String getLastMessageTimeAgo(int userProfileIndex) {
     final userProfileId = userProfiles[userProfileIndex]['user_id'];
     final userChatData =
         chatData.where((data) => data['user_id'] == userProfileId).toList();
@@ -162,28 +154,25 @@ String getLastMessageTimeAgo(int userProfileIndex) {
     return "";
   }
 
-
-
   void sendMessage(String message, int userProfileIndex) {
     Map<String, dynamic> chat = {
       "user_id": 1,
       "timestamp": DateTime.now().toString(),
       "message": message,
-      'read_status':0,
+      'read_status': 0,
       "is_sender": true
-  };
-  chatData.add(chat);
-  chatEditingController.clear();
-  notifyListeners();
+    };
+    chatData.add(chat);
+    chatEditingController.clear();
+    notifyListeners();
   }
-  
 }
-
 
 class ChatUserDetails {
   final String index;
   final String img;
   final String username;
 
-  ChatUserDetails({required this.index, required this.img, required this.username});
+  ChatUserDetails(
+      {required this.index, required this.img, required this.username});
 }

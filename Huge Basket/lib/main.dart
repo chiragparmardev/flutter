@@ -5,6 +5,7 @@ import 'package:localstorage/localstorage.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:provider/provider.dart';
 import 'package:task_27_03/Utils/AppColor.dart';
+import 'package:task_27_03/providers/address_provider.dart';
 import 'package:task_27_03/providers/chat_provider.dart';
 
 import 'package:task_27_03/route_setting.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
         ChangeNotifierProvider(create: (context) => ChatProvider()),
+        ChangeNotifierProvider(create: (context) => AdderssProvider()),
     ],child: GetMaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,

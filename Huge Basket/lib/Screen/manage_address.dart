@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import 'package:task_27_03/Cutom/Appbar/appbar_custom.dart';
+import 'package:task_27_03/Cutom/Button/custom_radio.dart';
 import 'package:task_27_03/Utils/AppColor.dart';
+import 'package:task_27_03/providers/address_provider.dart';
 import 'package:task_27_03/route_setting.dart';
 
 class ManageAddressScreen extends StatefulWidget {
@@ -13,54 +14,14 @@ class ManageAddressScreen extends StatefulWidget {
 }
 
 class _ManageAddressScreenState extends State<ManageAddressScreen> {
-  int selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserAddresses();
+    final provider = Provider.of<AdderssProvider>(context,listen: false);
+    provider.fetchUserAddresses();
   }
 
-  Future<List<Map<dynamic, dynamic>>?> getUserAddresses() async {
-    var box = await Hive.openBox('users_address');
-
-    String? token = await _getToken();
-    List<dynamic>? addresses = await box.get(token);
-    // print(addresses);
-    if (addresses != null) {
-      List<Map<dynamic, dynamic>> convertedAddresses =
-          addresses.cast<Map<dynamic, dynamic>>().toList();
-      return convertedAddresses;
-    } else {
-      return null;
-    }
-  }
-
-  Future<void> deleteAddress(int index) async {
-    var box = await Hive.openBox('users_address');
-
-    String? token = await _getToken();
-    List<dynamic>? addresses = await box.get(token);
-
-    if (addresses != null && index >= 0 && index < addresses.length) {
-      addresses.removeAt(index);
-      await box.put(token, addresses);
-    }
-  }
-
-  Future<String?> _getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token');
-  }
-
-  List<Map<dynamic, dynamic>>? userAddresses;
-
-  void _fetchUserAddresses() async {
-    List<Map<dynamic, dynamic>>? addresses = await getUserAddresses();
-    setState(() {
-      userAddresses = addresses;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +30,8 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
       appBar: uiHelper.CustomAppbar(() {
         Navigator.pop(context);
       }, 'Manage Address'),
-      body: SingleChildScrollView(
+      body:Consumer<AdderssProvider>(builder: (context, value, child) {
+        return SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -79,12 +41,10 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
                 children: [
                   Column(
                       children: List.generate(
-                    userAddresses?.length ?? 0,
+                    value.userAddresses?.length ?? 0,
                     (index) => GestureDetector(
                       onTap: () {
-                        setState(() {
-                          selectedIndex = index;
-                        });
+                          value.selectedIndex = index;
                       },
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 20),
@@ -105,14 +65,14 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
                               child: Row(
                                 children: [
                                   CustomRadioAddress(
-                                    isSelected: index == selectedIndex,
+                                    isSelected: index == value.selectedIndex,
                                   ),
                                   const SizedBox(
                                     width: 15,
                                   ),
                                   Flexible(
                                     child: Text(
-                                      "${userAddresses![index]['address']}, ${userAddresses![index]['unit']}, ${userAddresses![index]['city']}, ${userAddresses![index]['state']}, ${userAddresses![index]['zipcode']}, ${userAddresses![index]['instruction']}",
+                                      "${value.userAddresses![index]['address']}, ${value.userAddresses![index]['unit']}, ${value.userAddresses![index]['city']}, ${value.userAddresses![index]['state']}, ${value.userAddresses![index]['zipcode']}, ${value.userAddresses![index]['instruction']}",
                                       style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
@@ -134,9 +94,7 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
                                   Expanded(
                                     child: InkWell(
                                       onTap: () {
-                                        setState(() {
                                           _showDeleteConfirmationDialog(index);
-                                        });
                                       },
                                       child: const Center(
                                           child: Row(
@@ -246,7 +204,8 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
             ],
           ),
         ),
-      ),
+      );
+      },)
     );
   }
 
@@ -254,7 +213,10 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return
+        Consumer<AdderssProvider>(builder: (context, value, child) {
+          return AlertDialog(
+            elevation: 0,
           title: const Text('Confirm Delete'),
           content: const Text('Are you sure you want to delete this address?'),
           actions: <Widget>[
@@ -267,49 +229,18 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                _deleteAddress(index);
+                value.deleteAddress(index);
               },
               child: const Text('Delete'),
             ),
           ],
         );
+        },);
+         
       },
     );
   }
 
-  void _deleteAddress(int index) async {
-    await deleteAddress(index);
-    _fetchUserAddresses();
-  }
+
 }
 
-class CustomRadioAddress extends StatelessWidget {
-  const CustomRadioAddress({
-    super.key,
-    required this.isSelected,
-  });
-
-  final bool isSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 18,
-      width: 18,
-      decoration: BoxDecoration(
-        color: isSelected ? AppColor.primary : AppColor.grey200,
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: Center(
-        child: Container(
-          height: 6,
-          width: 6,
-          decoration: BoxDecoration(
-            color: isSelected ? AppColor.white : AppColor.grey,
-            borderRadius: BorderRadius.circular(50),
-          ),
-        ),
-      ),
-    );
-  }
-}
