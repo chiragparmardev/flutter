@@ -33,9 +33,10 @@ class _RecentChatState extends State<RecentChat> {
                 return Column(
                   children: [
                     InkWell(
-                      onTap: (){
+                      onTap: () {
+                        value.markMessagesAsRead(userProfile['user_id']);
                         Navigator.pushNamed(context, MyRouter.chat,
-                        arguments: ChatUserDetails(index: index.toString(), img: userProfile['image'] , username: userProfile['username'])
+                        arguments: ChatUserDetails(index: userProfile['user_id'].toString(), img: userProfile['image'] , username: userProfile['username'])
                         );
                       },
                       child: Container(

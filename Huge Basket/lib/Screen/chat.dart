@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:task_27_03/Utils/AppColor.dart';
 import 'package:task_27_03/providers/chat_provider.dart';
@@ -70,192 +71,180 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Column(
         children: [
           Expanded(
-            child: Consumer<ChatProvider>(
-              builder: (context, value, child) {
-              final chatData =
-                    value.getChatDataForUserProfile(int.parse(arguments.index));
-                Map<String, List<Map<String, dynamic>>> groupedMessages = {};
-                for (var message in chatData) {
-                  DateTime dateTime = DateTime.parse(message['timestamp']);
-                  String dateKey = value.getFormattedDate(dateTime);
+              child: Consumer<ChatProvider>(builder: (context, value, child) {
+            final chatUserData =
+                value.getChatDataForUserProfile(int.parse(userIndex));
+            return SingleChildScrollView(
+              reverse: true,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Column(
+                  children: [
+                    Column(
+                        children: List.generate(chatUserData.length, (index) {
+                      final message = chatUserData[index]['message'];
+                      final status = chatUserData[index]['read_status'];
+                      final isSender = chatUserData[index]['is_sender'];
+                      final chatsdate =
+                          DateTime.parse(chatUserData[index]['timestamp']);
 
-                  if (!groupedMessages.containsKey(dateKey)) {
-                    groupedMessages[dateKey] = [];
-                  }
-                  groupedMessages[dateKey]!.add(message);
-                }
-                return SingleChildScrollView(
-                  reverse: true,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                    child: Column(
-                      children: groupedMessages.keys.map((dateKey) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                      return Column(
+                          crossAxisAlignment: isSender
+                              ? CrossAxisAlignment.end
+                              : CrossAxisAlignment.start,
                           children: [
+                            if (index == 0 || 
+                                DateTime.parse(
+                                        chatUserData[index]['timestamp'].toString().substring(0,10)) !=
+                                    DateTime.parse(
+                                        chatUserData[index - 1]['timestamp']
+                                        .toString()
+                                        .substring(0, 10)))
+                              Center(
+                                  child: Text(
+                                value.getFormattedDate(chatsdate),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600),
+                              )),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 27, vertical: 14),
+                              margin: EdgeInsets.only(
+                                  left: isSender ? 106 : 0,
+                                  right: isSender ? 0 : 106),
+                              decoration: BoxDecoration(
+                                  color: isSender
+                                      ? AppColor.chatIsSederBackground
+                                      : AppColor.chatIsReceiverBackground,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: const Radius.circular(19),
+                                    topRight: const Radius.circular(19),
+                                    bottomLeft:
+                                        Radius.circular(isSender ? 19 : 0),
+                                    bottomRight:
+                                        Radius.circular(isSender ? 0 : 19),
+                                  )),
+                              child: Text(message),
+                            ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 10, bottom: 20),
-                              child: Center(
-                                child: Text(
-                                  dateKey,
-                                  style: const TextStyle(
-                                      fontSize: 14, fontWeight: FontWeight.bold),
-                                ),
+                              padding: const EdgeInsets.symmetric(vertical: 9),
+                              child: Row(
+                                mainAxisAlignment: isSender
+                                    ? MainAxisAlignment.end
+                                    : MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    DateFormat('hh:mm a').format(chatsdate),
+                                    style: const TextStyle(
+                                        fontSize: 10,
+                                        color: AppColor.black,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  const SizedBox(
+                                    width: 12,
+                                  ),
+                                  isSender
+                                      ? status == 1 || status == 2
+                                          ? Icon(
+                                              Icons.circle,
+                                              size: 5,
+                                              color: status == 1
+                                                  ? AppColor.black
+                                                  : AppColor.primary,
+                                            )
+                                          : const SizedBox()
+                                      : const SizedBox(),
+                                  isSender
+                                      ? status == 1 || status == 2
+                                          ? Icon(
+                                              Icons.circle,
+                                              size: 5,
+                                              color: status == 1
+                                                  ? AppColor.black
+                                                  : AppColor.primary,
+                                            )
+                                          : const SizedBox()
+                                      : const SizedBox(),
+                                  isSender
+                                      ? status == 0
+                                          ? const Icon(Icons.circle,
+                                              size: 5, color: AppColor.black)
+                                          : const SizedBox()
+                                      : const SizedBox(),
+                                ],
                               ),
-                            ),
-                      
-                            ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: groupedMessages[dateKey]!.length,
-                              itemBuilder: (context, index) {
-                                final message =
-                                    groupedMessages[dateKey]![index]['message'];
-                                final timestamp =
-                                    groupedMessages[dateKey]![index]['timestamp'];
-                                final status =
-                                    groupedMessages[dateKey]![index]['read_status'];
-                                final isSender =
-                                    groupedMessages[dateKey]![index]['is_sender'];
-                                return Column(
-                                  crossAxisAlignment: isSender
-                                      ? CrossAxisAlignment.end
-                                      : CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 27, vertical: 14),
-                                      margin: EdgeInsets.only(
-                                          left: isSender ? 106 : 0,
-                                          right: isSender ? 0 : 106),
-                                      decoration: BoxDecoration(
-                                          color: isSender
-                                              ? AppColor.chatIsSederBackground
-                                              : AppColor.chatIsReceiverBackground,
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: const Radius.circular(19),
-                                            topRight: const Radius.circular(19),
-                                            bottomLeft:
-                                                Radius.circular(isSender ? 19 : 0),
-                                            bottomRight:
-                                                Radius.circular(isSender ? 0 : 19),
-                                          )),
-                                      child: Text(message),
-                                    ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.symmetric(vertical: 9),
-                                      child: Row(
-                                        mainAxisAlignment: isSender
-                                            ? MainAxisAlignment.end
-                                            : MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            value.getTime(timestamp),
-                                            style: const TextStyle(
-                                                fontSize: 10,
-                                                color: AppColor.black,
-                                                fontWeight: FontWeight.w500),
-                                          ),
-                                          const SizedBox(
-                                            width: 12,
-                                          ),
-                                          status == 1 || status == 2
-                                              ? Icon(
-                                                  Icons.circle,
-                                                  size: 5,
-                                                  color: status == 1
-                                                      ? AppColor.black
-                                                      : AppColor.primary,
-                                                )
-                                              : const SizedBox(),
-                                          status == 1 || status == 2
-                                              ? Icon(
-                                                  Icons.circle,
-                                                  size: 5,
-                                                  color: status == 1
-                                                      ? AppColor.black
-                                                      : AppColor.primary,
-                                                )
-                                              : const SizedBox(),
-                                          status == 0
-                                              ? const Icon(Icons.circle,
-                                                  size: 5, color: AppColor.black)
-                                              : const SizedBox(),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                );
-                              },
-                            ),
-                          ],
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+                            )
+                          ]);
+                    })),
+                  ],
+                ),
+              ),
+            );
+          })),
           Consumer<ChatProvider>(builder: (context, value, child) {
             return Container(
-            color: Colors.transparent,
-            height: 48,
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Row(
-              children: [
-                Flexible(
-                  child: TextFormField(
-                    controller: value.chatEditingController,
-                    textInputAction: TextInputAction.send,
-                    keyboardType: TextInputType.text,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.all(0),
-                      suffixIcon: const Icon(
-                        Icons.add_circle,
-                        color: Colors.black,
-                        size: 28,
-                      ),
-                      prefixIcon: const Icon(Icons.keyboard_voice_sharp),
-                      fillColor: Colors.grey.withOpacity(0.2),
-                      filled: true,
-                      hintText: 'Send Your Massage',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        borderSide: BorderSide.none,
+              color: Colors.transparent,
+              height: 48,
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: Row(
+                children: [
+                  Flexible(
+                    child: TextFormField(
+                      controller: value.chatEditingController,
+                      textInputAction: TextInputAction.send,
+                      keyboardType: TextInputType.text,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(0),
+                        suffixIcon: const Icon(
+                          Icons.add_circle,
+                          color: Colors.black,
+                          size: 28,
+                        ),
+                        prefixIcon:  IconButton(onPressed: (){
+                            value.receiveMessage(
+                                  value.chatEditingController.text,
+                                  int.parse(userIndex));
+
+                        },icon:const Icon(Icons.keyboard_voice_sharp)),
+                        fillColor: Colors.grey.withOpacity(0.2),
+                        filled: true,
+                        hintText: 'Send Your Massage',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                
-                Container(
+                  Container(
                     padding: const EdgeInsets.all(8),
                     margin: const EdgeInsets.only(left: 8),
                     decoration: BoxDecoration(
                         color: AppColor.primary,
                         borderRadius: BorderRadius.circular(50)),
-                        clipBehavior: Clip.hardEdge,
-                    child:  Material(
+                    clipBehavior: Clip.hardEdge,
+                    child: Material(
                       color: Colors.transparent,
                       child: Ink(
                         child: InkWell(
-                          onTap: (){
-                            value.sendMessage(value.chatEditingController.text, int.parse(userIndex));
-                          },
-                          child: Center(child: Image.asset('assets/images/send.png'))),
+                            onTap: () {
+                              value.sendMessage(
+                                  value.chatEditingController.text,
+                                  int.parse(userIndex));
+                            },
+                            child: Center(
+                                child: Image.asset('assets/images/send.png'))),
                       ),
-                    ),),
-              ],
-            ),
-          );
+                    ),
+                  ),
+                ],
+              ),
+            );
           })
-          
         ],
       ),
-   
     );
   }
 }

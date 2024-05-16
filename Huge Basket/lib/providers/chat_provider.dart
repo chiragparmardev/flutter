@@ -1,71 +1,91 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 
 class ChatProvider extends ChangeNotifier {
   TextEditingController chatEditingController = TextEditingController();
 
   final List<Map<String, dynamic>> userProfiles = [
     {
-      "user_id": 1,
+      "user_id": 0,
       "username": "Walmart",
       "image":
           "https://www.vmcdn.ca/f/files/localprofile/import/2023_04_shutterstock_2033960729-scaled.jpg",
     },
     {
-      "user_id": 2,
+      "user_id": 1,
       "username": "Stop & Shop",
       "image":
           "https://www.supermarketnews.com/sites/supermarketnews.com/files/styles/article_featured_retina/public/Stop__Shop_new_look_store_banner_0.png?itok=HBTGic60",
     },
   ];
 
-  final List<Map<String, dynamic>> chatData = [
+final List<Map<String, dynamic>> chatData = [
     {
       "user_id": 1,
       "timestamp": "2024-05-08 08:30:00",
       "read_status": 2,
-      "message": "Hello there! send",
+      "message": "Hello ",
       "is_sender": true
+    },
+    {
+      "user_id": 0,
+      "timestamp": "2024-05-09 08:30:00",
+      "read_status": 2,
+      "message": "Hi ! How are you?",
+      "is_sender": false
     },
     {
       "user_id": 1,
-      "timestamp": "2024-05-09 08:30:00",
-      "read_status": 2,
-      "message": "Hello there! send",
-      "is_sender": true
-    },
-    {
-      "user_id": 2,
       "timestamp": "2024-05-09 08:32:00",
       "read_status": 0,
       "message": "Hi! How are you?",
       "is_sender": true
     },
     {
-      "user_id": 1,
+      "user_id": 0,
       "timestamp": "2024-05-10 09:35:00",
       "message": "I'm good, thanks!",
-      "is_sender": false
+      "read_status": 2,
+      "is_sender": true
     },
     {
-      "user_id": 1,
+      "user_id": 0,
       "timestamp": "2024-05-10 09:35:00",
       "message": "I'm good,!",
       "read_status": 1,
-      "is_sender": true
+      "is_sender": false
     },
   ];
 
+
   List<Map<String, dynamic>> getChatDataForUserProfile(int userProfileIndex) {
     final userProfileId = userProfiles[userProfileIndex]['user_id'];
-    return chatData.where((data) => data['user_id'] == userProfileId).toList();
+    return chatData.where((data) => data['user_id'] == userProfileId ).toList();
   }
+  
 
   int getUnreadCount(int userProfileIndex) {
     final userProfileId = userProfiles[userProfileIndex]['user_id'];
-    return chatData
+    var unread =  chatData
         .where((data) =>
-            data['user_id'] == userProfileId && data['read_status'] == 1)
+            data['user_id'] == userProfileId  &&
+            data['read_status'] == 1
+            && data['is_sender'] == false
+            )
         .length;
+        return  unread;
+  }
+
+  void markMessagesAsRead(int userProfileIndex) {
+    final userProfileId = userProfiles[userProfileIndex]['user_id'];
+
+    for (var data in chatData) {
+      if (data['user_id'] == userProfileId && data['is_sender'] == false) {
+        data['read_status'] = 2;
+      }
+    }
+    notifyListeners();
   }
 
   String getLastMessage(int userProfileIndex) {
@@ -92,47 +112,10 @@ class ChatProvider extends ChangeNotifier {
         date.day == yesterday.day) {
       return 'Yesterday';
     } else {
-      return '${date.day} ${getMonthName(date.month)}';
+      return '${DateFormat.d().format(date)} ${DateFormat.MMMM().format(date)}';
     }
   }
 
-  String getMonthName(int month) {
-    List<String> monthNames = [
-      '',
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December'
-    ];
-
-    if (month >= 1 && month <= 12) {
-      return monthNames[month];
-    } else {
-      return '';
-    }
-  }
-
-  String getTime(String timestamp) {
-    DateTime dateTime = DateTime.parse(timestamp);
-    String hour = (dateTime.hour % 12).toString();
-    if (hour == '0') {
-      hour = '12';
-    }
-    String minute = dateTime.minute.toString();
-    if (minute.length == 1) {
-      minute = '0$minute';
-    }
-    String period = dateTime.hour < 12 ? 'am' : 'pm';
-    return '$hour:$minute $period';
-  }
 
   String getLastMessageTimeAgo(int userProfileIndex) {
     final userProfileId = userProfiles[userProfileIndex]['user_id'];
@@ -155,12 +138,26 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void sendMessage(String message, int userProfileIndex) {
+  
     Map<String, dynamic> chat = {
-      "user_id": 1,
+      "user_id": userProfileIndex,
       "timestamp": DateTime.now().toString(),
       "message": message,
       'read_status': 0,
       "is_sender": true
+    };
+    chatData.add(chat);
+    chatEditingController.clear();
+    notifyListeners();
+  }
+
+  void receiveMessage(String message, int userProfileIndex) {
+    Map<String, dynamic> chat = {
+      "user_id": userProfileIndex,
+      "timestamp": DateTime.now().toString(),
+      "message": message,
+      'read_status': 2,
+      "is_sender": false
     };
     chatData.add(chat);
     chatEditingController.clear();
